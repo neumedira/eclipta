@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+  }
+  
+  body.dark-mode .navbar {
+    background-color: #1f1f1f !important;
+  }
+  
+  body.dark-mode .nav-link {
+    color: #ffffff !important;
+  }
+  
+  body.dark-mode .nav-link:hover {
+    color: #bb86fc !important;
+  }
+  
+  body.dark-mode .btn-light {
+    background-color: #bb86fc;
+    border-color: #bb86fc;
+  }
+  
+  body.dark-mode .btn-light:hover {
+    background-color: #3700b3;
+    border-color: #3700b3;
+  }
+  
+  /* Utility Classes for Dark Mode */
+  body.dark-mode .text-body {
+    color: #ffffff !important;
+  }
+  
+  body.dark-mode .bg-body {
+    background-color: #1f1f1f !important;
+  }
+
+  body .bg-gradient {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
+  }
+  body.dark-mode .bg-gradient {
+    background: linear-gradient(135deg, #1f1f1f 0%, #121212 100%) !important;
+  }
+
+  body .bg-light {
+    background-color: rgba(var(--bs-light-rgb),var(--bs-bg-opacity))!important;
+  }
+  body.dark-mode .bg-light {
+    background-color: #1f1f1f !important;
+  }
+
+  body .bg-text {
+    color: #000000!important;
+  }
+  body.dark-mode .bg-text {
+    color: #ffffff !important;
+  }
+
+  .table {
+    background-color: #ffffff;
+    color: #000000;
+  }
+  
+  .table thead th {
+    background-color: #f8f9fa;
+    color: #000000;
+    border-bottom: 2px solid #dee2e6;
+  }
+  
+  .table tbody tr {
+    transition: background-color 0.3s ease;
+  }
+  
+  .table tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .table tbody td {
+    border-top: 1px solid #dee2e6;
+  }
+  
+  /* Dark Mode Table Styling */
+  body.dark-mode .table {
+    background-color: #1f1f1f;
+    color: #ffffff;
+  }
+  
+  body.dark-mode .table thead th {
+    background-color: #2d2d2d;
+    color: #ffffff;
+    border-bottom: 2px solid #444;
+  }
+  
+  body.dark-mode .table tbody tr:hover {
+    background-color: #333;
+  }
+  
+  body.dark-mode .table tbody td {
+    border-top: 1px solid #444;
+  }
+  
