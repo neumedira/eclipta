@@ -10,6 +10,7 @@ import EditorComponent from '../../components/EditorComponent';
 import ImageModal from '../../components/ImageModal';
 import ImageUploader from '../../components/ImageUploader';
 import { uploadMultipleImages } from '../../utils/cloudinaryService';
+import { generateSlug } from '../../utils/slugify';
 
 const monthNames = [
   'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
@@ -141,6 +142,7 @@ const PortfolioAdmin: React.FC = () => {
 
     const tagsArray = tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
     const embedVideoUrl = video ? convertToEmbedUrl(video) : '';
+    const slug = generateSlug(title);
 
     const projectData = {
       title,
@@ -150,7 +152,8 @@ const PortfolioAdmin: React.FC = () => {
       description,
       video: embedVideoUrl,
       tags: tagsArray,
-      images: uploadedImages
+      images: uploadedImages,
+      slug
     };
 
     try {
@@ -264,7 +267,7 @@ const PortfolioAdmin: React.FC = () => {
                         variant="outline-info" 
                         size="sm"
                         as={Link}
-                        to={`/portfolio/${item.id}`}
+                        to={`/portfolio/${item.slug}`}
                         target="_blank"
                       >
                         <ExternalLink size={16} />

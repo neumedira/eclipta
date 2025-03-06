@@ -41,9 +41,9 @@ function App() {
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/portfolio" element={<PortfolioPage />} />
-              <Route path="/portfolio/:id" element={<PortfolioDetailPage />} />
+              <Route path="/portfolio/:slug" element={<PortfolioDetailPage />} />
               <Route path="/blog" element={<BlogPage />} />
-              <Route path="/blog/:id" element={<BlogDetailPage />} />
+              <Route path="/blog/:slug" element={<BlogDetailPage />} />
               <Route path="/admin/login" element={<LoginPage />} />
               <Route path="/logout" element={<LogoutPage />} />
               

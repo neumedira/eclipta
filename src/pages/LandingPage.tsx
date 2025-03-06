@@ -361,7 +361,7 @@ const LandingPage: React.FC = () => {
                     </Card.Text>
                     <Card.Text className="mb-3" style={{overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical'}}>{stripHtml(project.description)}</Card.Text>
                     <div className="d-flex justify-content-end">
-                        <Button as={Link} to={`/portfolio/${project.id}`} variant="outline-info" size="sm" className="rounded-pill px-3">
+                        <Button as={Link} to={`/portfolio/${project.slug}`} variant="outline-info" size="sm" className="rounded-pill px-3">
                         <span className="d-flex align-items-center">
                             View Project <ExternalLink size={14} className="ms-1" />
                         </span>
@@ -441,7 +441,7 @@ const LandingPage: React.FC = () => {
                       {stripHtml(post.content)}
                     </Card.Text>
                     <div className="d-flex justify-content-end">
-                      <Button as={Link} to={`/blog/${post.id}`} variant="outline-warning" size="sm" className="rounded-pill px-3">
+                      <Button as={Link} to={`/blog/${post.slug}`} variant="outline-warning" size="sm" className="rounded-pill px-3">
                         <span className="d-flex align-items-center">
                           Read More <ExternalLink size={14} className="ms-1" />
                         </span>

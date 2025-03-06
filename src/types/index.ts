@@ -42,6 +42,7 @@ export interface Portfolio {
   video?: string;
   tags?: string[];
   images?: string[];
+  slug: string;
 }
 
 export interface Blog {
@@ -52,6 +53,7 @@ export interface Blog {
   image: string;
   content: string;
   excerpt?: string;
+  slug: string;
 }
 
 export interface AppData {

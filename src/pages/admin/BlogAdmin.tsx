@@ -8,6 +8,7 @@ import { db, collection, addDoc, updateDoc, deleteDoc, getDocs, doc } from '../.
 import { showSuccessAlert, showErrorAlert, showConfirmAlert } from '../../utils/sweetAlert';
 import EditorComponent from '../../components/EditorComponent';
 import ImageModal from '../../components/ImageModal';
+import { generateSlug } from '../../utils/slugify';
 
 const formatDate = (dateString: string): string => {
   const options: Intl.DateTimeFormatOptions = { 
@@ -95,13 +96,15 @@ const BlogAdmin: React.FC = () => {
     e.preventDefault();
 
     const tagsArray = tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
+    const slug = generateSlug(title);
 
     const postData = {
       title,
       date,
       tags: tagsArray,
       image,
-      content
+      content,
+      slug
     };
 
     try {
@@ -210,7 +213,7 @@ const BlogAdmin: React.FC = () => {
                         variant="outline-info" 
                         size="sm"
                         as={Link}
-                        to={`/blog/${post.id}`}
+                        to={`/blog/${post.slug}`}
                         target="_blank"
                       >
                         <ExternalLink size={16} />

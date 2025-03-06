@@ -5,8 +5,8 @@ import { Search, ExternalLink, Calendar, Tags, Filter, X } from 'lucide-react';
 import SEO from '../components/SEO';
 import { db, collection, getDocs } from '../firebase';
 import ImageModal from '../components/ImageModal';
+import ReactPaginate from 'react-paginate';
 
-// Helper function untuk format tanggal ke Bahasa Indonesia
 const formatDateIndonesian = (dateString: string) => {
   if (dateString === 'Present') return 'Sekarang';
   
@@ -23,7 +23,7 @@ const formatDateIndonesian = (dateString: string) => {
 };
 
 const stripHtml = (html: string): string => {
-  return html.replace(/<[^>]*>?/gm, ''); // Menghapus semua tag HTML
+  return html.replace(/<[^>]*>?/gm, '');
 };
 
 const PortfolioPage: React.FC = () => {
@@ -34,6 +34,8 @@ const PortfolioPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 6;
 
   useEffect(() => {
     const fetchPortfolio = async () => {
@@ -55,12 +57,10 @@ const PortfolioPage: React.FC = () => {
     fetchPortfolio();
   }, []);
 
-  // Get all unique tags
   const allTags = Array.from(
     new Set(allPortfolio.flatMap(project => project.tags))
   ).sort();
 
-  // Filter portfolio based on search term and selected tag
   useEffect(() => {
     const filtered = allPortfolio.filter(project => {
       const matchesSearch =
@@ -75,6 +75,20 @@ const PortfolioPage: React.FC = () => {
 
     setFilteredPortfolio(filtered);
   }, [searchTerm, selectedTag, allPortfolio]);
+
+  const sortedPortfolio = filteredPortfolio.sort((a, b) => {
+    const dateA = a.endDate === 'Present' ? new Date() : new Date(a.endDate);
+    const dateB = b.endDate === 'Present' ? new Date() : new Date(b.endDate);
+    return dateB.getTime() - dateA.getTime();
+  });
+
+  const pageCount = Math.ceil(sortedPortfolio.length / itemsPerPage);
+  const offset = currentPage * itemsPerPage;
+  const currentPortfolio = sortedPortfolio.slice(offset, offset + itemsPerPage);
+
+  const handlePageClick = (selectedItem: { selected: number }) => {
+    setCurrentPage(selectedItem.selected);
+  };
 
   const openModal = (imageUrl: string) => {
     setSelectedImage(imageUrl);
@@ -92,7 +106,6 @@ const PortfolioPage: React.FC = () => {
         description="Explore my portfolio of projects and work as a Software Engineer."
       />
       
-      {/* Header Section with Gradient Background */}
       <div className="py-5 bg-gradient">
         <Container>
           <Row className="justify-content-center text-center">
@@ -107,7 +120,6 @@ const PortfolioPage: React.FC = () => {
       </div>
       
       <Container className="py-5">
-        {/* Search and Filter Section */}
         <Card className="mb-4 border-0 shadow-sm bg-body">
           <Card.Body className="p-4">
             <Row>
@@ -156,7 +168,6 @@ const PortfolioPage: React.FC = () => {
           </Card.Body>
         </Card>
 
-        {/* Filter Summary */}
         {(searchTerm || selectedTag) && (
           <div className="d-flex align-items-center mb-4">
             <span className="text-muted me-2 bg-text">Filters:</span>
@@ -211,115 +222,137 @@ const PortfolioPage: React.FC = () => {
             <p className="mt-3">Loading projects...</p>
           </div>
         ) : (
-          <Row>
-            {filteredPortfolio.map((project) => (
-              <Col key={project.id} md={6} lg={4} className="mb-4">
-                <Card className="h-100 border-0 shadow-sm hover-card">
-                  <div style={{ height: '200px', overflow: 'hidden', position: 'relative' }}>
-                    {project.image ? (
-                      <Card.Img
-                        variant="top"
-                        src={project.image}
-                        alt={project.title}
-                        style={{ 
-                          objectFit: 'cover', 
-                          height: '100%', 
-                          width: '100%',
-                          transition: 'transform 0.3s ease',
-                          cursor: 'pointer'
-                        }}
-                        onClick={() => openModal(project.image)}
-                      />
-                    ) : (
-                      <div 
-                        style={{ 
-                          height: '100%', 
-                          width: '100%', 
-                          background: 'linear-gradient(45deg, #e0e0e0, #f5f5f5)', 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          justifyContent: 'center', 
-                          color: '#666', 
-                          fontSize: '1rem' 
-                        }}
-                      >
-                        No Image
-                      </div>
-                    )}
-                  </div>
-                  <Card.Body className="p-4">
-                    <Card.Title className="fw-bold mb-2">{project.title}</Card.Title>
-                    <Card.Text className="text-muted small d-flex align-items-center mb-2">
-                      <Calendar size={14} className="me-1" />
-                      {formatDateIndonesian(project.startDate)} - {project.endDate && !isNaN(new Date(project.endDate).getTime()) ? formatDateIndonesian(project.endDate) : 'Sekarang'}
-                    </Card.Text>
-                    
-                    {project.tags && project.tags.length > 0 && (
-                      <div className="mb-3 d-flex align-items-center flex-wrap">
-                        <Tags size={18} className="me-1 text-muted" />
-                        {project.tags.map((tag: string, index: number) => (
-                          <Badge 
-                            key={index} 
-                            bg="info" 
-                            text="dark" 
-                            className="me-2 mb-1 p-2 rounded-pill"
-                            style={{ fontSize: '0.80rem' }}
-                          >
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
-                    
-                    <Card.Text style={{
-                      overflow: 'hidden', 
-                      textOverflow: 'ellipsis', 
-                      display: '-webkit-box', 
-                      WebkitLineClamp: 3, 
-                      WebkitBoxOrient: 'vertical',
-                      marginBottom: '1rem'
-                    }}>
-                      {project.excerpt || stripHtml(project.description).substring(0, 100) + '...'}
-                    </Card.Text>
-                    <div className="d-flex justify-content-end">
-                      <Button 
-                        as={Link} 
-                        to={`/portfolio/${project.id}`} 
-                        variant="primary" 
-                        size="sm"
-                        className="rounded-pill px-3"
-                      >
-                        <span className="d-flex align-items-center">
-                          View Details <ExternalLink size={14} className="ms-1" />
-                        </span>
-                      </Button>
+          <>
+            <Row>
+              {currentPortfolio.map((project) => (
+                <Col key={project.id} md={6} lg={4} className="mb-4">
+                  <Card className="h-100 border-0 shadow-sm hover-card">
+                    <div style={{ height: '200px', overflow: 'hidden', position: 'relative' }}>
+                      {project.image ? (
+                        <Card.Img
+                          variant="top"
+                          src={project.image}
+                          alt={project.title}
+                          style={{ 
+                            objectFit: 'cover', 
+                            height: '100%', 
+                            width: '100%',
+                            transition: 'transform 0.3s ease',
+                            cursor: 'pointer'
+                          }}
+                          onClick={() => openModal(project.image)}
+                        />
+                      ) : (
+                        <div 
+                          style={{ 
+                            height: '100%', 
+                            width: '100%', 
+                            background: 'linear-gradient(45deg, #e0e0e0, #f5f5f5)', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center', 
+                            color: '#666', 
+                            fontSize: '1rem' 
+                          }}
+                        >
+                          No Image
+                        </div>
+                      )}
                     </div>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
+                    <Card.Body className="p-4">
+                      <Card.Title className="fw-bold mb-2">{project.title}</Card.Title>
+                      <Card.Text className="text-muted small d-flex align-items-center mb-2">
+                        <Calendar size={14} className="me-1" />
+                        {formatDateIndonesian(project.startDate)} - {project.endDate && !isNaN(new Date(project.endDate).getTime()) ? formatDateIndonesian(project.endDate) : 'Sekarang'}
+                      </Card.Text>
+                      
+                      {project.tags && project.tags.length > 0 && (
+                        <div className="mb-3 d-flex align-items-center flex-wrap">
+                          <Tags size={18} className="me-1 text-muted" />
+                          {project.tags.map((tag: string, index: number) => (
+                            <Badge 
+                              key={index} 
+                              bg="info" 
+                              text="dark" 
+                              className="me-2 mb-1 p-2 rounded-pill"
+                              style={{ fontSize: '0.80rem' }}
+                            >
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                      
+                      <Card.Text style={{
+                        overflow: 'hidden', 
+                        textOverflow: 'ellipsis', 
+                        display: '-webkit-box', 
+                        WebkitLineClamp: 3, 
+                        WebkitBoxOrient: 'vertical',
+                        marginBottom: '1rem'
+                      }}>
+                        {project.excerpt || stripHtml(project.description).substring(0, 100) + '...'}
+                      </Card.Text>
+                      <div className="d-flex justify-content-end">
+                        <Button 
+                          as={Link} 
+                          to={`/portfolio/${project.slug}`} 
+                          variant="primary" 
+                          size="sm"
+                          className="rounded-pill px-3"
+                        >
+                          <span className="d-flex align-items-center">
+                            View Details <ExternalLink size={14} className="ms-1" />
+                          </span>
+                        </Button>
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))}
 
-            {filteredPortfolio.length === 0 && !loading && (
-              <Col className="text-center py-5">
-                <div className="bg-light p-5 rounded-3">
-                  <h3 className="mb-3 bg-text">No projects found</h3>
-                  <p className="mb-4">Try adjusting your search or filter criteria.</p>
-                  <Button
-                    variant="primary"
-                    className="rounded-pill px-4"
-                    onClick={() => {
-                      setSearchTerm('');
-                      setSelectedTag(null);
-                    }}
-                  >
-                    <span className="d-flex align-items-center">
-                      Clear Filters <X size={18} className="ms-2" />
-                    </span>
-                  </Button>
-                </div>
-              </Col>
-            )}
-          </Row>
+              {filteredPortfolio.length === 0 && !loading && (
+                <Col className="text-center py-5">
+                  <div className="bg-light p-5 rounded-3">
+                    <h3 className="mb-3 bg-text">No projects found</h3>
+                    <p className="mb-4">Try adjusting your search or filter criteria.</p>
+                    <Button
+                      variant="primary"
+                      className="rounded-pill px-4"
+                      onClick={() => {
+                        setSearchTerm('');
+                        setSelectedTag(null);
+                      }}
+                    >
+                      <span className="d-flex align-items-center">
+                        Clear Filters <X size={18} className="ms-2" />
+                      </span>
+                    </Button>
+                  </div>
+                </Col>
+              )}
+            </Row>
+
+            <ReactPaginate
+              previousLabel={'Previous'}
+              nextLabel={'Next'}
+              breakLabel={'...'}
+              pageCount={pageCount}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={5}
+              onPageChange={handlePageClick}
+              containerClassName={'pagination justify-content-center'}
+              activeClassName={'active'}
+              pageClassName={'page-item'}
+              pageLinkClassName={'page-link'}
+              previousClassName={'page-item'}
+              previousLinkClassName={'page-link'}
+              nextClassName={'page-item'}
+              nextLinkClassName={'page-link'}
+              breakClassName={'page-item'}
+              breakLinkClassName={'page-link'}
+            />
+          </>
         )}
       </Container>
       

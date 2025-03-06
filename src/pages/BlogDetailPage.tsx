@@ -3,7 +3,7 @@ import { useParams, Link, Navigate } from 'react-router-dom';
 import { Container, Row, Col, Badge, Card, Spinner } from 'react-bootstrap';
 import { ArrowLeft, Calendar, Info } from 'lucide-react';
 import SEO from '../components/SEO';
-import { db, doc, getDoc } from '../firebase';
+import { db, collection, query, where, getDocs } from '../firebase';
 import ImageModal from '../components/ImageModal';
 
 interface BlogPost {
@@ -14,6 +14,7 @@ interface BlogPost {
   image: string;
   date: string;
   tags: string[];
+  slug: string;
 }
 
 // Helper function to format dates in Indonesian
@@ -28,19 +29,20 @@ const formatDateIndonesian = (dateString: string): string => {
 };
 
 const BlogDetailPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   useEffect(() => {
     const fetchPost = async () => {
-      if (id) {
-        const postRef = doc(db, 'blogPosts', id);
-        const postSnap = await getDoc(postRef);
+      if (slug) {
+        const q = query(collection(db, 'blogPosts'), where('slug', '==', slug));
+        const querySnapshot = await getDocs(q);
 
-        if (postSnap.exists()) {
-          setPost({ id: postSnap.id, ...postSnap.data() } as BlogPost);
+        if (!querySnapshot.empty) {
+          const doc = querySnapshot.docs[0];
+          setPost({ id: doc.id, ...doc.data() } as BlogPost);
         } else {
           setPost(null);
         }
@@ -48,7 +50,7 @@ const BlogDetailPage: React.FC = () => {
       }
     };
     fetchPost();
-  }, [id]);
+  }, [slug]);
 
   const openModal = () => {
     setModalIsOpen(true);

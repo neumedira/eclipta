@@ -3,7 +3,7 @@ import { useParams, Link, Navigate } from 'react-router-dom';
 import { Container, Row, Col, Badge, Card, Spinner } from 'react-bootstrap';
 import { ArrowLeft, Calendar, Tag, Info, Image as ImageIcon } from 'lucide-react';
 import SEO from '../components/SEO';
-import { db, doc, getDoc } from '../firebase';
+import { db, collection, query, where, getDocs } from '../firebase';
 import ImageModal from '../components/ImageModal';
 import Modal from 'react-modal';
 
@@ -36,7 +36,7 @@ const formatDateIndonesian = (dateString: string): string => {
 };
 
 const PortfolioDetailPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const [project, setProject] = useState<PortfolioItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -44,21 +44,21 @@ const PortfolioDetailPage: React.FC = () => {
 
   useEffect(() => {
     const fetchProject = async () => {
-      if (id) {
-        const projectRef = doc(db, 'portfolio', id);
-        const projectSnap = await getDoc(projectRef);
+      if (slug) {
+        const q = query(collection(db, 'portfolio'), where('slug', '==', slug));
+        const querySnapshot = await getDocs(q);
 
-        if (projectSnap.exists()) {
-          setProject({ id: projectSnap.id, ...projectSnap.data() } as PortfolioItem);
+        if (!querySnapshot.empty) {
+          const doc = querySnapshot.docs[0];
+          setProject({ id: doc.id, ...doc.data() } as PortfolioItem);
         } else {
           setProject(null);
         }
         setLoading(false);
       }
     };
-
     fetchProject();
-  }, [id]);
+  }, [slug]);
 
   const openModal = (imageUrl: string) => {
     setCurrentImage(imageUrl);

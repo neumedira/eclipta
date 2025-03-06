@@ -1,6 +1,6 @@
 # My Personal Web
 
-Proyek web personal ini dibangun menggunakan React, TypeScript, Vite, Firebase, Cloudinary, dan Bootstrap 5. Web peronal ini dinamis data-data nya dapat di ubah melalui dashboard admin, mencakup fitur-fitur seperti autentikasi pengguna, upload gambar, dan manajemen konten.
+Proyek web personal ini dibangun menggunakan React, TypeScript, Vite, Firebase, Cloudinary, dan Bootstrap 5 dengan bantuan Bolt New, DeepSeek, Claude AI. Web peronal ini dinamis jadi data-data nya dapat di ubah melalui dashboard admin, mencakup fitur-fitur seperti autentikasi pengguna, upload gambar, dan manajemen konten.
 
 ## Fitur Utama
 - **Upload Gambar**: Menggunakan Cloudinary untuk menyimpan dan mengelola gambar.
