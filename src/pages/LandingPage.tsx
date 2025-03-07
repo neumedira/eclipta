@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button, Badge } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Briefcase, GraduationCap, Github, Linkedin, Instagram, AtSign, ExternalLink, Calendar } from 'lucide-react';
+import { ArrowRight, Briefcase, GraduationCap, Github, Linkedin, Instagram, AtSign, ExternalLink, Calendar, Code, BookOpen } from 'lucide-react';
 import SEO from '../components/SEO';
-import { db, doc, getDoc, collection, getDocs } from '../firebase'; // Import fungsi Firestore
-import { About, Portfolio, Blog } from '../types'; // Import tipe data
+import { db, doc, getDoc, collection, getDocs } from '../firebase';
+import { About, Portfolio, Blog } from '../types';
+import 'devicon/devicon.min.css';
 
 // Data Dummy
 const dummyAbout: About = {
@@ -22,6 +23,8 @@ const dummyAbout: About = {
   description: "I am a passionate software engineer with experience in building web applications.",
   experiences: [],
   educations: [],
+  techStack: [],
+  interests: [],
 };
 
 const formatDateIndonesian = (dateString: string, format: 'long' | 'short' | 'full' = 'long') => {
@@ -246,8 +249,69 @@ const LandingPage: React.FC = () => {
           </Row>
         </Container>
       </section>
+
+      <section className="pt-5">
+        <Container>
+          <Row>
+            <Col lg={12}>
+              <Card className="bg-body bg-text border-0 shadow-md hover-card">
+                <Card.Body className="p-4">
+                  <div className='sec-tectstack mb-3'>
+                    <div className="d-flex align-items-center mb-4">
+                      <div className="bg-primary p-2 rounded-circle text-white me-3">
+                        <Code size={24} />
+                      </div>
+                      <h3 className="h3 m-0 bg-text">Tech Stack</h3>
+                    </div>
+                    <Row className="text-center g-2">
+                      {about.techStack.map((tech, index) => (
+                        <Col key={index} xs={6} sm={2} md={2} className="mb-1">
+                          <div className="tech-card p-3 rounded-3" style={{ backgroundColor: `${tech.color}15` }}>
+                            {tech.icon.includes('fa') ? (
+                              <i className={tech.icon} style={{ fontSize: '2.5rem', color: tech.color }}></i>
+                            ) : (
+                              <i className={`${tech.icon} colored`} style={{ fontSize: '2.5rem' }}></i>
+                            )}
+                            <p className="mt-2 mb-0 fw-semibold" style={{ color: tech.color }}>{tech.name}</p>
+                          </div>
+                        </Col>
+                      ))}
+                    </Row>
+                  </div>
+                  <div className='sec-interests'>
+                    <div className="d-flex align-items-center mb-4">
+                      <div className="bg-primary p-2 rounded-circle text-white me-3">
+                        <BookOpen size={24} />
+                      </div>
+                      <h3 className="h3 m-0 bg-text">Interests</h3>
+                    </div>
+                    <Row className="g-3">
+                      {about.interests.map((interest, index) => (
+                        <Col key={index} xs={12} sm={6} md={3} className="mb-1">
+                          <div 
+                            className="interest-card p-3 rounded-3 h-100 d-flex align-items-center flex-wrap" 
+                            style={{ 
+                              backgroundColor: `${interest.color}15`, 
+                              borderLeft: `4px solid ${interest.color}`,
+                              gap: '10px',
+                            }}
+                          >
+                            <i className={interest.icon} style={{ fontSize: '1.5rem', color: interest.color }}></i>
+                            <span className="fw-medium" style={{ flex: 1, wordWrap: 'break-word' }}>
+                              {interest.name}
+                            </span>
+                          </div>
+                        </Col>
+                      ))}
+                    </Row>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      </section>
       
-      {/* Experience Section */}
       <section className="py-5">
         <Container>
           <Row>
@@ -302,7 +366,6 @@ const LandingPage: React.FC = () => {
         </Container>
       </section>
       
-      {/* Portfolio Preview Section */}
       <section className="py-5 bg-body">
         <Container>
           <div className="d-flex justify-content-between align-items-center mb-4">
@@ -375,7 +438,6 @@ const LandingPage: React.FC = () => {
         </Container>
       </section>
       
-      {/* Blog Preview Section */}
       <section className="py-5 bg-body">
         <Container>
           <div className="d-flex justify-content-between align-items-center mb-4">
@@ -455,7 +517,6 @@ const LandingPage: React.FC = () => {
         </Container>
       </section>
 
-      {/* Add this CSS for hover effects */}
       <style>{`
         .hover-card {
           transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -468,6 +529,31 @@ const LandingPage: React.FC = () => {
         
         .hover-card:hover img {
           transform: scale(1.05);
+        }
+        
+        .tech-card {
+          transition: all 0.3s ease;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          max-width: 90%;
+          margin: 0 auto;
+        }
+        
+        .tech-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .interest-card {
+          transition: all 0.3s ease;
+        }
+        
+        .interest-card:hover {
+          transform: translateX(5px);
+          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
       `}</style>
     </>

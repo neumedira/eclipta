@@ -27,7 +27,7 @@ const SEO: React.FC<SEOProps> = ({
     <Helmet>
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
-      <meta name="keywords" content="Hafiizh Zoelva Khairani, Website Hafiizh Zoelva, Software Engineer, Web Developer, React Developer, TypeScript Expert, Firebase Integration, Cloudinary Setup, Programming Blog, Tech Enthusiast, Coding Tutorials, Web Development Tips, Frontend Development, Backend Development, API Integration, Responsive Web Design, Tech Career Advice, Latest Technology Trends" />
+      <meta name="keywords" content="Eclipta Web Personal, Software Engineer, Web Developer, React Developer, TypeScript Expert, Firebase Integration, Cloudinary Setup, Programming Blog, Tech Enthusiast, Coding Tutorials, Web Development Tips, Frontend Development, Backend Development, API Integration, Responsive Web Design, Tech Career Advice, Latest Technology Trends" />
       <meta name="author" content={siteName} />
       
       <meta property="og:title" content={fullTitle} />
