@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Form, Button, Row, Col, Card, Table, Modal } from 'react-bootstrap';
 import { ArrowLeft, Trash, Edit } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { About, Experience, Education } from '../../types';
+import { About, Experience, Education, TechStack, Interest } from '../../types';
 import ImageUploader from '../../components/ImageUploader';
 import { db, collection, addDoc, updateDoc, getDocs, doc } from '../../firebase';
 import { showSuccessAlert, showErrorAlert, showConfirmAlert } from '../../utils/sweetAlert';
@@ -26,10 +26,14 @@ const AboutAdmin: React.FC = () => {
     description: '',
     experiences: [],
     educations: [],
+    techStack: [],
+    interests: [],
   });
   const [showModal, setShowModal] = useState(false);
   const [currentExperience, setCurrentExperience] = useState<Experience | null>(null);
   const [currentEducation, setCurrentEducation] = useState<Education | null>(null);
+  const [currentTechStack, setCurrentTechStack] = useState<TechStack | null>(null);
+  const [currentInterest, setCurrentInterest] = useState<Interest | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
@@ -51,6 +55,8 @@ const AboutAdmin: React.FC = () => {
   const resetModal = () => {
     setCurrentExperience(null);
     setCurrentEducation(null);
+    setCurrentTechStack(null);
+    setCurrentInterest(null);
     setIsEditing(false);
   };
 
@@ -206,6 +212,134 @@ const AboutAdmin: React.FC = () => {
         if (!querySnapshot.empty) {
           const aboutDoc = querySnapshot.docs[0];
           await updateDoc(doc(db, 'about', aboutDoc.id), { educations: updatedEducations });
+        }
+        showSuccessAlert('Data deleted successfully!');
+      } catch (error) {
+        showErrorAlert('Failed to delete data:' + error);
+      }
+    });
+  };
+
+  const handleTechStackChange = (field: keyof TechStack, value: string) => {
+    if (currentTechStack) {
+      setCurrentTechStack({
+        ...currentTechStack,
+        [field]: value,
+      });
+    }
+  };
+
+  const handleInterestChange = (field: keyof Interest, value: string) => {
+    if (currentInterest) {
+      setCurrentInterest({
+        ...currentInterest,
+        [field]: value,
+      });
+    }
+  };
+
+  const addTechStack = () => {
+    setCurrentTechStack({
+      name: '',
+      icon: '',
+      color: '',
+    });
+    setCurrentInterest(null);
+    setIsEditing(false);
+    setShowModal(true);
+  };
+
+  const editTechStack = (techStack: TechStack) => {
+    setCurrentTechStack(techStack);
+    setCurrentInterest(null);
+    setIsEditing(true);
+    setShowModal(true);
+  };
+
+  const saveTechStack = () => {
+    if (currentTechStack) {
+      const updatedTechStack = isEditing
+        ? about.techStack.map(ts => ts.name === currentTechStack.name ? currentTechStack : ts)
+        : [...about.techStack, currentTechStack];
+
+      setAbout({
+        ...about,
+        techStack: updatedTechStack,
+      });
+      setShowModal(false);
+      resetModal();
+    }
+  };
+
+  const removeTechStack = async (name: string) => {
+    showConfirmAlert('Are you sure you want to delete this data?', async () => {
+      try {
+        const updatedTechStack = about.techStack.filter(ts => ts.name !== name);
+        setAbout({
+          ...about,
+          techStack: updatedTechStack,
+        });
+
+        const aboutCollection = collection(db, 'about');
+        const querySnapshot = await getDocs(aboutCollection);
+        if (!querySnapshot.empty) {
+          const aboutDoc = querySnapshot.docs[0];
+          await updateDoc(doc(db, 'about', aboutDoc.id), { techStack: updatedTechStack });
+        }
+        showSuccessAlert('Data deleted successfully!');
+      } catch (error) {
+        showErrorAlert('Failed to delete data:' + error);
+      }
+    });
+  };
+
+  const addInterest = () => {
+    setCurrentInterest({
+      name: '',
+      icon: '',
+      color: '',
+    });
+    setCurrentTechStack(null);
+    setIsEditing(false);
+    setShowModal(true);
+  };
+
+  const editInterest = (interest: Interest) => {
+    setCurrentInterest(interest);
+    setCurrentTechStack(null);
+    setIsEditing(true);
+    setShowModal(true);
+  };
+
+  const saveInterest = () => {
+    if (currentInterest) {
+      const updatedInterests = isEditing
+        ? about.interests.map(int => int.name === currentInterest.name ? currentInterest : int)
+        : [...about.interests, currentInterest];
+
+      setAbout({
+        ...about,
+        interests: updatedInterests,
+      });
+      setShowModal(false);
+      resetModal();
+    }
+  };
+
+  const removeInterest = async (name: string) => {
+    showConfirmAlert('Are you sure you want to delete this data?', async () => {
+      try {
+        const updatedInterests = about.interests.filter(int => int.name !== name);
+        setAbout({
+          ...about,
+          interests: updatedInterests,
+        });
+
+        const aboutCollection = collection(db, 'about');
+        const querySnapshot = await getDocs(aboutCollection);
+        if (!querySnapshot.empty) {
+          const aboutDoc = querySnapshot.docs[0];
+          await updateDoc(doc(db, 'about', aboutDoc.id), { interests: updatedInterests });
         }
         showSuccessAlert('Data deleted successfully!');
       } catch (error) {
@@ -384,6 +518,104 @@ const AboutAdmin: React.FC = () => {
                   </Form.Group>
                 </Col>
               </Row>
+            </Card.Body>
+          </Card>
+
+          <Card className="mb-4 border-0 shadow-sm">
+            <Card.Body>
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h3 className="h5 mb-0 text-dark">Tech Stack</h3>
+                <Button variant="primary" onClick={addTechStack}>
+                  Add Tech Stack
+                </Button>
+              </div>
+              
+              <div className="table-responsive">
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Icon</th>
+                      <th>Color</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {about.techStack.length > 0 ? (
+                      about.techStack.map((techStack) => (
+                        <tr key={techStack.name}>
+                          <td>{techStack.name}</td>
+                          <td>{techStack.icon}</td>
+                          <td>{techStack.color}</td>
+                          <td>
+                            <Button variant="outline-primary" size="sm" onClick={() => editTechStack(techStack)}>
+                              <Edit size={16} />
+                            </Button>
+                            <Button variant="outline-danger" size="sm" onClick={() => removeTechStack(techStack.name)} className="ms-2">
+                              <Trash size={16} />
+                            </Button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={4} className="text-center text-muted">
+                          No tech stack added yet. Click the "Add Tech Stack" button to add one.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </Table>
+              </div>
+            </Card.Body>
+          </Card>
+
+          <Card className="mb-4 border-0 shadow-sm">
+            <Card.Body>
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h3 className="h5 mb-0 text-dark">Interests</h3>
+                <Button variant="primary" onClick={addInterest}>
+                  Add Interest
+                </Button>
+              </div>
+              
+              <div className="table-responsive">
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Icon</th>
+                      <th>Color</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {about.interests.length > 0 ? (
+                      about.interests.map((interest) => (
+                        <tr key={interest.name}>
+                          <td>{interest.name}</td>
+                          <td>{interest.icon}</td>
+                          <td>{interest.color}</td>
+                          <td>
+                            <Button variant="outline-primary" size="sm" onClick={() => editInterest(interest)}>
+                              <Edit size={16} />
+                            </Button>
+                            <Button variant="outline-danger" size="sm" onClick={() => removeInterest(interest.name)} className="ms-2">
+                              <Trash size={16} />
+                            </Button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={4} className="text-center text-muted">
+                          No interests added yet. Click the "Add Interest" button to add one.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </Table>
+              </div>
             </Card.Body>
           </Card>
           
@@ -598,6 +830,110 @@ const AboutAdmin: React.FC = () => {
             Close
           </Button>
           <Button variant="primary" onClick={currentExperience ? saveExperience : saveEducation}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal size='lg' show={showModal} onHide={() => { setShowModal(false); resetModal(); }}>
+        <Modal.Header closeButton>
+          <Modal.Title className='text-black'>{isEditing ? 'Edit' : 'Add'} {currentTechStack ? 'Tech Stack' : 'Interest'}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className='text-black'>
+          {currentTechStack && (
+            <Form>
+              <Form.Group className="mb-3" controlId="name">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={currentTechStack.name}
+                  onChange={(e) => handleTechStackChange('name', e.target.value)}
+                  placeholder='VueJS'
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="icon">
+                <Form.Label>Icon</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={currentTechStack.icon}
+                  onChange={(e) => handleTechStackChange('icon', e.target.value)}
+                  placeholder='devicon-vuejs-plain / fa-solid fa-cloud'
+                  required
+                />
+                <Form.Text className="text-muted">
+                  You can choose icons from{' '}
+                  <a href="https://devicon.dev" className='text-primary' target="_blank" rel="noopener noreferrer">
+                    https://devicon.dev
+                  </a>{' '}
+                  or{' '}
+                  <a href="https://fontawesome.com/v6/search" className='text-primary' target="_blank" rel="noopener noreferrer">
+                    https://fontawesome.com
+                  </a>. Copy the icon class name and paste it here.
+                </Form.Text>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="color">
+                <Form.Label>Color</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={currentTechStack.color}
+                  onChange={(e) => handleTechStackChange('color', e.target.value)}
+                  placeholder='#61DAFB'
+                  required
+                />
+              </Form.Group>
+            </Form>
+          )}
+          {currentInterest && (
+            <Form>
+              <Form.Group className="mb-3" controlId="name">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={currentInterest.name}
+                  onChange={(e) => handleInterestChange('name', e.target.value)}
+                  placeholder='Cloud Computing'
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="icon">
+                <Form.Label>Icon</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={currentInterest.icon}
+                    onChange={(e) => handleInterestChange('icon', e.target.value)}
+                    placeholder='devicon-vuejs-plain / fa-solid fa-cloud'
+                    required
+                  />
+                  <Form.Text className="text-muted">
+                    You can choose icons from{' '}
+                    <a href="https://devicon.dev" className='text-primary' target="_blank" rel="noopener noreferrer">
+                      https://devicon.dev
+                    </a>{' '}
+                    or{' '}
+                    <a href="https://fontawesome.com/v6/search" className='text-primary' target="_blank" rel="noopener noreferrer">
+                      https://fontawesome.com
+                    </a>. Copy the icon class name and paste it here.
+                  </Form.Text>
+                </Form.Group>
+              <Form.Group className="mb-3" controlId="color">
+                <Form.Label>Color</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={currentInterest.color}
+                  onChange={(e) => handleInterestChange('color', e.target.value)}
+                  placeholder='#61DAFB'
+                  required
+                />
+              </Form.Group>
+            </Form>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => { setShowModal(false); resetModal(); }}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={currentTechStack ? saveTechStack : saveInterest}>
             Save Changes
           </Button>
         </Modal.Footer>

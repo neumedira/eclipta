@@ -13,6 +13,7 @@
     "axios": "^1.6.7",
     "bootstrap": "^5.3.3",
     "cloudinary-react": "^1.8.1",
+    "devicon": "^2.16.0",
     "firebase": "^11.4.0",
     "firebase-admin": "^13.1.0",
     "jodit": "^4.5.17",

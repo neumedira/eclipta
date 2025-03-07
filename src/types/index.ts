@@ -13,6 +13,20 @@ export interface About {
   description: string;
   experiences: Experience[];
   educations: Education[];
+  techStack: TechStack[];
+  interests: Interest[];
+}
+
+export interface TechStack {
+  name: string;
+  icon: string;
+  color: string;
+}
+
+export interface Interest {
+  name: string;
+  icon: string;
+  color: string;
 }
 
 export interface Experience {

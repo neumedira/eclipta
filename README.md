@@ -1,6 +1,6 @@
-# My Personal Web
+# Eclipta
 
-Proyek web personal ini dibangun menggunakan React, TypeScript, Vite, Firebase, Cloudinary, dan Bootstrap 5 dengan bantuan Bolt New, DeepSeek, Claude AI. Web peronal ini dinamis jadi data-data nya dapat di ubah melalui dashboard admin, mencakup fitur-fitur seperti autentikasi pengguna, upload gambar, dan manajemen konten.
+Proyek web personal ini dibangun menggunakan React, TypeScript, Vite, Firebase, Cloudinary, dan Bootstrap 5 dengan bantuan Bolt New, DeepSeek, Claude AI. Web personal ini dinamis jadi data-data nya dapat di ubah melalui dashboard admin, mencakup fitur-fitur seperti autentikasi pengguna, upload gambar, dan manajemen konten. Proyek ini bersifat **open-source** dan dapat digunakan sebagai referensi atau dikembangkan lebih lanjut.
 
 ## Fitur Utama
 - **Upload Gambar**: Menggunakan Cloudinary untuk menyimpan dan mengelola gambar.
@@ -17,8 +17,8 @@ Proyek web personal ini dibangun menggunakan React, TypeScript, Vite, Firebase, 
 
 1. **Clone Repository**
    ```bash
-   git clone https://github.com/username/my-personal-web.git
-   cd my-personal-web
+   git clone https://github.com/neumedira/eclipta.git
+   cd eclipta
    ```
 
 2. **Instal Dependencies**
@@ -101,3 +101,19 @@ Proyek web personal ini dibangun menggunakan React, TypeScript, Vite, Firebase, 
   - URL Login Admin = `http://localhost:8877/admin/login`
   - Saat login sebagai admin, Anda akan diminta untuk memasukkan kode ini.
   - Pastikan kode ini hanya diketahui oleh orang yang berwenang.
+
+## Kontribusi
+
+Ini adalah proyek open-source. Jika ingin berkontribusi:
+1. **Fork repo ini**.
+2. **Buat branch baru** untuk fitur atau perbaikan (`git checkout -b fitur-baru`).
+3. **Commit perubahan** (`git commit -m "Menambahkan fitur X"`).
+4. **Push ke branch Anda** (`git push origin fitur-baru`).
+5. **Buat Pull Request**.
+
+## Lisensi
+Proyek ini menggunakan lisensi **MIT**, sehingga bebas digunakan dan dimodifikasi.
+
+---
+
+Jika ada pertanyaan atau saran, silakan buat **issue** atau **pull request**. 🚀
