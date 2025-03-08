@@ -70,6 +70,16 @@ export interface Blog {
   slug: string;
 }
 
+export interface Licenses {
+  id: string;
+  name: string;
+  issuingOrganization: string;
+  issueDate: string;
+  expirationDate: string;
+  credentialUrl: string;
+  image: string;
+}
+
 export interface AppData {
   about: About;
   portfolio: Portfolio[];

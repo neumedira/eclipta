@@ -11,6 +11,7 @@ import LandingPage from './pages/LandingPage';
 import PortfolioPage from './pages/PortfolioPage';
 import PortfolioDetailPage from './pages/PortfolioDetailPage';
 import BlogPage from './pages/BlogPage';
+import LicensesPage from './pages/LicensesPage';
 import BlogDetailPage from './pages/BlogDetailPage';
 import LoginPage from './pages/LoginPage';
 import LogoutPage from './pages/LogoutPage';
@@ -18,6 +19,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AboutAdmin from './pages/admin/AboutAdmin';
 import PortfolioAdmin from './pages/admin/PortfolioAdmin';
 import BlogAdmin from './pages/admin/BlogAdmin';
+import LicenseAdmin from './pages/admin/LicenseAdmin';
 
 // Komponen untuk scroll ke atas
 const ScrollToTop = () => {
@@ -34,7 +36,7 @@ function App() {
   return (
     <HelmetProvider>
       <Router>
-        <ScrollToTop /> {/* Tambahkan di sini, di dalam Router */}
+        <ScrollToTop />
         <div className="d-flex flex-column min-vh-100">
           <Navbar />
           <main className="flex-grow-1">
@@ -44,10 +46,10 @@ function App() {
               <Route path="/portfolio/:slug" element={<PortfolioDetailPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogDetailPage />} />
+              <Route path="/licenses" element={<LicensesPage />} />
               <Route path="/admin/login" element={<LoginPage />} />
               <Route path="/logout" element={<LogoutPage />} />
               
-              {/* Protected Admin Routes */}
               <Route 
                 path="/admin" 
                 element={
@@ -77,6 +79,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <BlogAdmin />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/license" 
+                element={
+                  <ProtectedRoute>
+                    <LicenseAdmin />
                   </ProtectedRoute>
                 } 
               />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Navbar as BootstrapNavbar, Nav, Container, Button } from 'react-bootstrap';
 import { isAuthenticated } from '../utils/authService';
@@ -12,7 +12,8 @@ const Navbar: React.FC = () => {
     const savedMode = localStorage.getItem('darkMode');
     return savedMode ? JSON.parse(savedMode) : false;
   });
-  const { about, loading, error } = useAboutData(); // Destructure the hook's return value
+  const { about, error } = useAboutData(); // Destructure the hook's return value
+  const navbarToggleRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (darkMode) {
@@ -32,7 +33,15 @@ const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  const handleNavLinkClick = () => {
+    // Cek apakah navbar dalam keadaan expanded (di perangkat mobile)
+    const navbarCollapse = document.getElementById('basic-navbar-nav');
+    if (navbarCollapse?.classList.contains('show')) {
+      // Klik tombol toggle untuk menutup navbar
+      navbarToggleRef.current?.click();
+    }
+  };
+
   if (error) return <div>Error: {error}</div>;
 
   return (
@@ -47,13 +56,14 @@ const Navbar: React.FC = () => {
         <BootstrapNavbar.Brand as={Link} to="/" className="fw-bold fs-4">
           <span className={darkMode ? 'text-light' : 'text-primary'}>{about?.shortName}</span>
         </BootstrapNavbar.Brand>
-        <BootstrapNavbar.Toggle aria-controls="basic-navbar-nav" />
+        <BootstrapNavbar.Toggle aria-controls="basic-navbar-nav" ref={navbarToggleRef} />
         <BootstrapNavbar.Collapse id="basic-navbar-nav">
-          <Nav className="ms-auto">
+          <Nav className="ms-auto py-2">
             {[
               { path: '/', label: 'Home' },
               { path: '/portfolio', label: 'Portfolio' },
-              { path: '/blog', label: 'Blog' }
+              { path: '/blog', label: 'Blog' },
+              { path: '/licenses', label: 'Licenses' }
             ].map((item) => (
               <Nav.Link 
                 key={item.path}
@@ -61,6 +71,7 @@ const Navbar: React.FC = () => {
                 to={item.path} 
                 active={location.pathname === item.path || location.pathname.startsWith(item.path !== '/' ? item.path : null)}
                 className={`mx-1 px-3 nav-link ${location.pathname === item.path || location.pathname.startsWith(item.path !== '/' ? item.path : null) ? 'active rounded-pill bg-primary bg-opacity-10 text-primary fw-bold' : (darkMode ? 'text-light hover-lift' : 'text-dark hover-lift')}`}
+                onClick={handleNavLinkClick}
               >
                 {item.label}
               </Nav.Link>
@@ -73,6 +84,7 @@ const Navbar: React.FC = () => {
                   to="/admin" 
                   active={location.pathname.startsWith('/admin')}
                   className={`mx-1 px-3 nav-link ${location.pathname.startsWith('/admin') ? 'active rounded-pill bg-primary bg-opacity-10 text-primary fw-bold' : (darkMode ? 'text-light hover-lift' : 'text-dark hover-lift')}`}
+                  onClick={handleNavLinkClick}
                 >
                   Admin
                 </Nav.Link>
@@ -80,6 +92,7 @@ const Navbar: React.FC = () => {
                   as={Link} 
                   to="/logout"
                   className={`mx-1 px-3 nav-link ${darkMode ? 'text-light hover-lift' : 'text-dark hover-lift'}`}
+                  onClick={handleNavLinkClick}
                 >
                   Logout
                 </Nav.Link>

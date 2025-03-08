@@ -106,7 +106,13 @@ const LandingPage: React.FC = () => {
         id: doc.id,
         ...doc.data(),
       })) as Portfolio[];
-      setPortfolio(portfolioData);
+
+      const sortedPortfolio = portfolioData.sort((a, b) => {
+        const dateA = a.endDate ? new Date(a.endDate).getTime() : new Date().getTime();
+        const dateB = b.endDate ? new Date(b.endDate).getTime() : new Date().getTime();
+        return dateB - dateA; // Descending
+      });
+      setPortfolio(sortedPortfolio);
 
       // Ambil data Blog
       const blogCollectionRef = collection(db, 'blogPosts');
@@ -115,7 +121,13 @@ const LandingPage: React.FC = () => {
         id: doc.id,
         ...doc.data(),
       })) as Blog[];
-      setBlogPosts(blogData);
+
+      const sortedBlogPosts = blogData.sort((a, b) => {
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        return dateB - dateA; // Descending
+      });
+      setBlogPosts(sortedBlogPosts);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
