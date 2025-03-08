@@ -29,7 +29,8 @@ const AboutAdmin: React.FC = () => {
     techStack: [],
     interests: [],
   });
-  const [showModal, setShowModal] = useState(false);
+  const [showExperienceModal, setShowExperienceModal] = useState(false);
+  const [showTechStackModal, setShowTechStackModal] = useState(false);
   const [currentExperience, setCurrentExperience] = useState<Experience | null>(null);
   const [currentEducation, setCurrentEducation] = useState<Education | null>(null);
   const [currentTechStack, setCurrentTechStack] = useState<TechStack | null>(null);
@@ -116,14 +117,14 @@ const AboutAdmin: React.FC = () => {
     });
     setCurrentEducation(null);
     setIsEditing(false);
-    setShowModal(true);
+    setShowExperienceModal(true);
   };
 
   const editExperience = (experience: Experience) => {
     setCurrentExperience(experience);
     setCurrentEducation(null);
     setIsEditing(true);
-    setShowModal(true);
+    setShowExperienceModal(true);
   };
 
   const saveExperience = () => {
@@ -136,7 +137,7 @@ const AboutAdmin: React.FC = () => {
         ...about,
         experiences: updatedExperiences,
       });
-      setShowModal(false);
+      setShowExperienceModal(false);
       resetModal();
     }
   };
@@ -173,14 +174,14 @@ const AboutAdmin: React.FC = () => {
     });
     setCurrentExperience(null);
     setIsEditing(false);
-    setShowModal(true);
+    setShowExperienceModal(true);
   };
 
   const editEducation = (education: Education) => {
     setCurrentEducation(education);
     setCurrentExperience(null);
     setIsEditing(true);
-    setShowModal(true);
+    setShowExperienceModal(true);
   };
 
   const saveEducation = () => {
@@ -193,7 +194,7 @@ const AboutAdmin: React.FC = () => {
         ...about,
         educations: updatedEducations,
       });
-      setShowModal(false);
+      setShowExperienceModal(false);
       resetModal();
     }
   };
@@ -240,41 +241,42 @@ const AboutAdmin: React.FC = () => {
 
   const addTechStack = () => {
     setCurrentTechStack({
+      id: `tech${Date.now()}`,
       name: '',
       icon: '',
       color: '',
     });
     setCurrentInterest(null);
     setIsEditing(false);
-    setShowModal(true);
+    setShowTechStackModal(true);
   };
 
   const editTechStack = (techStack: TechStack) => {
     setCurrentTechStack(techStack);
     setCurrentInterest(null);
     setIsEditing(true);
-    setShowModal(true);
+    setShowTechStackModal(true);
   };
 
   const saveTechStack = () => {
     if (currentTechStack) {
       const updatedTechStack = isEditing
-        ? about.techStack.map(ts => ts.name === currentTechStack.name ? currentTechStack : ts)
-        : [...about.techStack, currentTechStack];
+      ? about.techStack.map(ts => ts.id === currentTechStack.id ? currentTechStack : ts)
+      : [...about.techStack, currentTechStack];
 
       setAbout({
         ...about,
         techStack: updatedTechStack,
       });
-      setShowModal(false);
+      setShowTechStackModal(false);
       resetModal();
     }
   };
 
-  const removeTechStack = async (name: string) => {
+  const removeTechStack = async (id: string) => {
     showConfirmAlert('Are you sure you want to delete this data?', async () => {
       try {
-        const updatedTechStack = about.techStack.filter(ts => ts.name !== name);
+        const updatedTechStack = about.techStack.filter(ts => ts.id !== id);
         setAbout({
           ...about,
           techStack: updatedTechStack,
@@ -295,41 +297,42 @@ const AboutAdmin: React.FC = () => {
 
   const addInterest = () => {
     setCurrentInterest({
+      id: `rest${Date.now()}`,
       name: '',
       icon: '',
       color: '',
     });
     setCurrentTechStack(null);
     setIsEditing(false);
-    setShowModal(true);
+    setShowTechStackModal(true);
   };
 
   const editInterest = (interest: Interest) => {
     setCurrentInterest(interest);
     setCurrentTechStack(null);
     setIsEditing(true);
-    setShowModal(true);
+    setShowTechStackModal(true);
   };
 
   const saveInterest = () => {
     if (currentInterest) {
       const updatedInterests = isEditing
-        ? about.interests.map(int => int.name === currentInterest.name ? currentInterest : int)
+        ? about.interests.map(int => int.id === currentInterest.id ? currentInterest : int)
         : [...about.interests, currentInterest];
 
       setAbout({
         ...about,
         interests: updatedInterests,
       });
-      setShowModal(false);
+      setShowTechStackModal(false);
       resetModal();
     }
   };
 
-  const removeInterest = async (name: string) => {
+  const removeInterest = async (id: string) => {
     showConfirmAlert('Are you sure you want to delete this data?', async () => {
       try {
-        const updatedInterests = about.interests.filter(int => int.name !== name);
+        const updatedInterests = about.interests.filter(int => int.id !== id);
         setAbout({
           ...about,
           interests: updatedInterests,
@@ -543,7 +546,7 @@ const AboutAdmin: React.FC = () => {
                   <tbody>
                     {about.techStack.length > 0 ? (
                       about.techStack.map((techStack) => (
-                        <tr key={techStack.name}>
+                        <tr key={techStack.id}>
                           <td>{techStack.name}</td>
                           <td>{techStack.icon}</td>
                           <td>{techStack.color}</td>
@@ -551,7 +554,7 @@ const AboutAdmin: React.FC = () => {
                             <Button variant="outline-primary" size="sm" onClick={() => editTechStack(techStack)}>
                               <Edit size={16} />
                             </Button>
-                            <Button variant="outline-danger" size="sm" onClick={() => removeTechStack(techStack.name)} className="ms-2">
+                            <Button variant="outline-danger" size="sm" onClick={() => removeTechStack(techStack.id)} className="ms-2">
                               <Trash size={16} />
                             </Button>
                           </td>
@@ -592,7 +595,7 @@ const AboutAdmin: React.FC = () => {
                   <tbody>
                     {about.interests.length > 0 ? (
                       about.interests.map((interest) => (
-                        <tr key={interest.name}>
+                        <tr key={interest.id}>
                           <td>{interest.name}</td>
                           <td>{interest.icon}</td>
                           <td>{interest.color}</td>
@@ -600,7 +603,7 @@ const AboutAdmin: React.FC = () => {
                             <Button variant="outline-primary" size="sm" onClick={() => editInterest(interest)}>
                               <Edit size={16} />
                             </Button>
-                            <Button variant="outline-danger" size="sm" onClick={() => removeInterest(interest.name)} className="ms-2">
+                            <Button variant="outline-danger" size="sm" onClick={() => removeInterest(interest.id)} className="ms-2">
                               <Trash size={16} />
                             </Button>
                           </td>
@@ -732,7 +735,7 @@ const AboutAdmin: React.FC = () => {
         </Form>
       </Container>
 
-      <Modal size='lg' show={showModal} onHide={() => { setShowModal(false); resetModal(); }}>
+      <Modal size='lg' show={showExperienceModal} onHide={() => { setShowExperienceModal(false); resetModal(); }}>
         <Modal.Header closeButton>
           <Modal.Title className='text-black'>{isEditing ? 'Edit' : 'Add'} {currentExperience ? 'Experience' : 'Education'}</Modal.Title>
         </Modal.Header>
@@ -826,7 +829,7 @@ const AboutAdmin: React.FC = () => {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => { setShowModal(false); resetModal(); }}>
+          <Button variant="secondary" onClick={() => { setShowExperienceModal(false); resetModal(); }}>
             Close
           </Button>
           <Button variant="primary" onClick={currentExperience ? saveExperience : saveEducation}>
@@ -835,7 +838,7 @@ const AboutAdmin: React.FC = () => {
         </Modal.Footer>
       </Modal>
 
-      <Modal size='lg' show={showModal} onHide={() => { setShowModal(false); resetModal(); }}>
+      <Modal size='lg' show={showTechStackModal} onHide={() => { setShowTechStackModal(false); resetModal(); }}>
         <Modal.Header closeButton>
           <Modal.Title className='text-black'>{isEditing ? 'Edit' : 'Add'} {currentTechStack ? 'Tech Stack' : 'Interest'}</Modal.Title>
         </Modal.Header>
@@ -930,7 +933,7 @@ const AboutAdmin: React.FC = () => {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => { setShowModal(false); resetModal(); }}>
+          <Button variant="secondary" onClick={() => { setShowTechStackModal(false); resetModal(); }}>
             Close
           </Button>
           <Button variant="primary" onClick={currentTechStack ? saveTechStack : saveInterest}>

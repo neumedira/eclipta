@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "axios": "^1.6.7",
+    "axios": "^1.8.2",
     "bootstrap": "^5.3.3",
     "cloudinary-react": "^1.8.1",
     "devicon": "^2.16.0",

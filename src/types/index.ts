@@ -18,12 +18,14 @@ export interface About {
 }
 
 export interface TechStack {
+  id: string;
   name: string;
   icon: string;
   color: string;
 }
 
 export interface Interest {
+  id: string;
   name: string;
   icon: string;
   color: string;
