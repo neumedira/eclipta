@@ -46,14 +46,23 @@ const EditorComponent: React.FC<EditorComponentProps> = ({ content, onContentCha
             />
 
 <style>{`
-.jodit-wysiwyg ol {
-    list-style-type: decimal;
-    padding-left: 30px;
-}
-.jodit-wysiwyg ul {
-    list-style-type: disc;
-    padding-left: 30px;
-}
+    .jodit-wysiwyg ol {
+        list-style-type: decimal;
+        padding-left: 30px;
+    }
+    .jodit-wysiwyg ul {
+        list-style-type: disc;
+        padding-left: 30px;
+    }
+    .jodit-wysiwyg {
+        color: black !important;
+    }
+    .jodit-wysiwyg * {
+        color: black !important;
+    }
+    .jodit-popup__content * {
+        color: black !important;
+    }
 `}</style>
         </div>
     );

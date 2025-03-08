@@ -7,8 +7,7 @@ import { db, collection, query, where, getDocs } from '../firebase';
 import ImageModal from '../components/ImageModal';
 import Modal from 'react-modal';
 
-// Set the app element for react-modal accessibility
-Modal.setAppElement('#root'); // Assuming your app has a div with id="root"
+Modal.setAppElement('#root');
 
 interface PortfolioItem {
   id: string;
@@ -22,7 +21,6 @@ interface PortfolioItem {
   images?: string[];
 }
 
-// Helper function to format dates in Indonesian
 const formatDateIndonesian = (dateString: string): string => {
   if (dateString === 'Present') return 'Sekarang';
   
@@ -40,7 +38,7 @@ const PortfolioDetailPage: React.FC = () => {
   const [project, setProject] = useState<PortfolioItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [currentImage, setCurrentImage] = useState('');
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -60,13 +58,25 @@ const PortfolioDetailPage: React.FC = () => {
     fetchProject();
   }, [slug]);
 
-  const openModal = (imageUrl: string) => {
-    setCurrentImage(imageUrl);
+  const openModal = (index: number) => {
+    setCurrentImageIndex(index);
     setModalIsOpen(true);
   };
   
   const closeModal = () => {
     setModalIsOpen(false);
+  };
+
+  const handleNext = () => {
+    if (project?.images && currentImageIndex < project.images.length - 1) {
+      setCurrentImageIndex(currentImageIndex + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentImageIndex > 0) {
+      setCurrentImageIndex(currentImageIndex - 1);
+    }
   };
 
   if (loading) {
@@ -110,7 +120,7 @@ const PortfolioDetailPage: React.FC = () => {
                     backgroundPosition: 'center',
                     cursor: 'pointer'
                   }}
-                  onClick={() => openModal(project.image)}
+                  onClick={() => openModal(0)}
                 >
                   <div className="position-absolute bottom-0 start-0 w-100 bg-dark bg-opacity-50 p-3 text-white">
                     <h1 className="display-6 fw-bold mb-0">{project.title}</h1>
@@ -202,7 +212,7 @@ const PortfolioDetailPage: React.FC = () => {
                     <Col key={index} xs={6} md={4} className="gallery-item">
                       <div 
                         className="card h-100 overflow-hidden gallery-card border-0 position-relative"
-                        onClick={() => openModal(img)}
+                        onClick={() => openModal(index)}
                       >
                         <div 
                           className="gallery-img"
@@ -259,9 +269,21 @@ const PortfolioDetailPage: React.FC = () => {
       <ImageModal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        imageUrl={currentImage}
+        imageUrl={project.images ? project.images[currentImageIndex] : ''}
         altText={project.title}
+        onNext={handleNext}
+        onPrevious={handlePrevious}
+        hasNext={project.images ? currentImageIndex < project.images.length - 1 : false}
+        hasPrevious={currentImageIndex > 0}
+        showNavigation={true} // Menampilkan tombol navigasi
       />
+
+      <style>{`
+      .lead a {
+        color: blue!important;
+        font-weight: 400;
+      }
+      `}</style>
     </>
   );
 };

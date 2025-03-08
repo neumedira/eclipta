@@ -3,9 +3,23 @@
 Proyek web personal ini dibangun menggunakan React, TypeScript, Vite, Firebase, Cloudinary, dan Bootstrap 5 dengan bantuan Bolt New, DeepSeek, Claude AI. Web personal ini dinamis jadi data-data nya dapat di ubah melalui dashboard admin, mencakup fitur-fitur seperti autentikasi pengguna, upload gambar, dan manajemen konten. Proyek ini bersifat **open-source** dan dapat digunakan sebagai referensi atau dikembangkan lebih lanjut.
 
 ## Fitur Utama
-- **Upload Gambar**: Menggunakan Cloudinary untuk menyimpan dan mengelola gambar.
-- **Manajemen Konten**: Menggunakan editor teks Jodit untuk membuat dan mengedit konten.
-- **Responsive Design**: Dibangun dengan Bootstrap 5 untuk tampilan yang responsif.
+- Manajemen personal info, sosial media, pengalaman kerja, pendidikan, tech stack, dan interests
+- Manajemen portofolio
+- Manajemen blog
+- Manajemen lisensi dan sertifikat
+- Dashboard admin
+- Upload Gambar: Menggunakan Cloudinary untuk menyimpan dan mengelola gambar.
+- Manajemen Konten: Menggunakan editor teks Jodit untuk membuat dan mengedit konten.
+- Responsive Design: Dibangun dengan Bootstrap 5 untuk tampilan yang responsif.
+
+## Preview Project
+
+Berikut adalah beberapa gambar preview dari proyek ini:
+
+![Preview 1](https://res.cloudinary.com/ddozgkxvt/image/upload/v1741365366/u1xgbbcqzwihswspkoo2.png)
+![Preview 2](https://res.cloudinary.com/ddozgkxvt/image/upload/v1741365366/qz0eovlougfqebygvdiu.png)
+![Preview 3](https://res.cloudinary.com/ddozgkxvt/image/upload/v1741365366/cn0mbbguxzddbtq0dikx.png)
+![Preview 4](https://res.cloudinary.com/ddozgkxvt/image/upload/v1741365366/nadhfhqqaxjo0ihcg9il.png)
 
 ## Prasyarat
 - Node.js (versi 18 atau lebih baru)

@@ -7,14 +7,17 @@ import { db, collection, getDocs } from '../../firebase';
 const AdminDashboard: React.FC = () => {
   const [portfolioCount, setPortfolioCount] = useState(0);
   const [blogPostsCount, setBlogPostsCount] = useState(0);
+  const [licensesCount, setLicensesCount] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
       const portfolioSnapshot = await getDocs(collection(db, 'portfolio'));
       const blogSnapshot = await getDocs(collection(db, 'blogPosts'));
+      const licensesSnapshot = await getDocs(collection(db, 'licenses'));
 
       setPortfolioCount(portfolioSnapshot.size);
       setBlogPostsCount(blogSnapshot.size);
+      setLicensesCount(licensesSnapshot.size);
     };
 
     fetchData();
@@ -76,7 +79,7 @@ const AdminDashboard: React.FC = () => {
           <DashboardCard 
             icon={User}
             title="About"
-            description="Manage your personal information, experience, and education."
+            description="Manage your personal information, experience, education, tech stack, and interests."
             linkTo="/admin/about"
           />
           
@@ -94,6 +97,14 @@ const AdminDashboard: React.FC = () => {
             description="Manage your blog posts."
             linkTo="/admin/blog"
             count={blogPostsCount}
+          />
+
+          <DashboardCard 
+            icon={FileText}
+            title="Licenses and Certifications"
+            description="Manage Licenses and Certifications."
+            linkTo="/admin/license"
+            count={licensesCount}
           />
         </Row>
       </Container>
