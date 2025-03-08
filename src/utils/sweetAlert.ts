@@ -32,3 +32,23 @@ export const showConfirmAlert = (message: string, onConfirm: () => void) => {
     }
   });
 };
+
+export const showLoadingAlert = () => {
+  Swal.fire({
+    title: 'Uploading...',
+    html: 'Uploading image to Cloudinary. Please wait...',
+    didOpen: () => {
+      Swal.showLoading();
+    },
+    willClose: () => {
+      // Clear any intervals or timeouts if needed
+    },
+    showConfirmButton: false,
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+  });
+};
+
+export const closeLoadingAlert = () => {
+  Swal.close();
+};

@@ -124,19 +124,6 @@ const BlogDetailPage: React.FC = () => {
               <div className="d-flex align-items-center mb-4">
                 <Calendar size={20} className="text-primary me-2" />
                 <span className="text-muted bg-text">{formatDateIndonesian(post.date)}</span>
-                
-                <div className="ms-auto">
-                  {post.tags.map((tag, index) => (
-                    <Badge 
-                      key={index} 
-                      bg="primary" 
-                      className="me-1 mb-1 py-2 px-3"
-                      style={{ fontWeight: 500, borderRadius: '20px' }}
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
               </div>
               
               <div className="blog-content" dangerouslySetInnerHTML={{ __html: post.content }} />
