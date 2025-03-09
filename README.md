@@ -41,7 +41,7 @@ Berikut adalah beberapa gambar preview dari proyek ini:
    ```
 
 3. **Buat File `.env`**
-   - Buat file `.env` di root folder proyek.
+   - Buat file `.env` di root folder proyek. Copy saja dari file .env.example.
    - Isi file tersebut dengan environment variables berikut:
      ```env
      VITE_ADMIN_ACCESS_CODE=kode_rahasia_anda
@@ -71,36 +71,86 @@ Berikut adalah beberapa gambar preview dari proyek ini:
 1. **Buat Proyek Firebase**
    - Buka [Firebase Console](https://console.firebase.google.com/).
    - Klik **Add project** dan ikuti langkah-langkahnya.
+   - Beri nama proyek Anda dan klik **Continue**.
+   - Pilih apakah Anda ingin mengaktifkan Google Analytics untuk proyek ini (opsional), lalu klik **Continue**.
+   - Setelah proyek dibuat, klik **Continue** untuk masuk ke dashboard Firebase.
 
 2. **Tambahkan Aplikasi Web**
-   - Setelah proyek dibuat, klik **Add app** dan pilih **Web**.
-   - Daftarkan aplikasi Anda dan dapatkan konfigurasi Firebase.
+   - Di dashboard Firebase, klik ikon **</>** untuk menambahkan aplikasi web.
+   - Daftarkan aplikasi Anda dengan memberikan nama aplikasi.
+   - Firebase akan memberikan konfigurasi untuk aplikasi Anda. Salin konfigurasi tersebut.
 
 3. **Dapatkan Environment Variables**
-   - Setelah mendaftarkan aplikasi, Firebase akan memberikan konfigurasi seperti `apiKey`, `authDomain`, `projectId`, dll.
-   - Salin nilai-nilai tersebut ke file `.env` Anda.
+   - Setelah mendaftarkan aplikasi, Firebase akan memberikan konfigurasi seperti berikut:
+     ```javascript
+     const firebaseConfig = {
+       apiKey: "API_KEY",
+       authDomain: "AUTH_DOMAIN",
+       projectId: "PROJECT_ID",
+       storageBucket: "STORAGE_BUCKET",
+       messagingSenderId: "MESSAGING_SENDER_ID",
+       appId: "APP_ID",
+       measurementId: "MEASUREMENT_ID"
+     };
+     ```
+   - Salin nilai-nilai tersebut ke file `.env`
 
-4. **Aktifkan Firebase Authentication**
-   - Di Firebase Console, buka **Authentication** dan aktifkan metode login yang Anda inginkan (misalnya, Email/Password).
+4. **Setup Firebase Storage**
+   - Di Firebase Console, buka **Storage** di menu sebelah kiri.
+   - Klik **Get Started** untuk mengaktifkan Firebase Storage.
+   - Ikuti langkah-langkah yang diberikan untuk menyelesaikan setup.
 
-5. **Setup Firebase Storage**
-   - Buka **Storage** di Firebase Console dan aktifkan layanan penyimpanan.
+5. **Setup Firestore Database**
+   - Di Firebase Console, buka **Firestore Database** di menu sebelah kiri.
+   - Klik **Create database** untuk membuat database Firestore.
+   - Pilih mode **Production** atau **Test** (pilih **Test** jika Anda ingin mengizinkan akses baca/tulis tanpa batasan untuk sementara).
+   - Setelah database dibuat, Anda dapat mengatur Rules untuk Firestore.
+
+6. **Membuat Rules untuk Firestore**
+   - Buka tab **Rules** di Firestore Database.
+   - Ganti Rules default dengan Rules berikut untuk mengizinkan akses baca/tulis tanpa batasan:
+     ```plaintext
+     rules_version = '2';
+
+     service cloud.firestore {
+       match /databases/{database}/documents {
+         match /{document=**} {
+           allow read, write: if true;
+         }
+       }
+     }
+     ```
+   - Klik **Publish** untuk menyimpan perubahan Rules.
 
 ## Cara Membuat Cloudinary
 
 1. **Buat Akun Cloudinary**
-   - Buka [Cloudinary](https://cloudinary.com/) dan buat akun gratis.
+   - Buka [Cloudinary](https://cloudinary.com/) dan klik **Sign Up** untuk membuat akun gratis.
+   - Isi formulir pendaftaran dengan detail yang diperlukan dan verifikasi akun Anda.
 
 2. **Dapatkan Cloudinary Credentials**
-   - Setelah login, Anda bisa menemukan `Cloud Name`, `API Key`, dan `API Secret` di dashboard Cloudinary.
+   - Setelah login, Anda akan diarahkan ke dashboard Cloudinary.
+   - Di dashboard, Anda dapat menemukan `Cloud Name`, `API Key`, dan `API Secret` di bagian **Account Details**.
+   - Salin nilai-nilai tersebut untuk digunakan di file `.env`.
 
 3. **Buat Upload Preset**
-   - Buka **Settings** > **Upload**.
-   - Buat upload preset baru dan atur sesuai kebutuhan Anda.
-   - Salin nama upload preset ke file `.env` Anda.
+   - Di dashboard Cloudinary, buka **Settings** > **Upload**.
+   - Scroll ke bagian **Upload presets** dan klik **Add upload preset**.
+   - Beri nama preset Anda (misalnya, `ml_default`).
+   - Atur opsi upload sesuai kebutuhan Anda (misalnya, izinkan format file tertentu, atur ukuran maksimal file, dll.).
+   - Klik **Save** untuk menyimpan preset.
+   - Salin nama upload preset yang telah dibuat (misalnya, `ml_default`) untuk digunakan di file `.env`.
 
 4. **Isi Environment Variables**
-   - Masukkan `Cloud Name`, `API Key`, `API Secret`, dan `Upload Preset` ke file `.env`.
+   - Buka file `.env` di proyek Anda dan tambahkan variabel berikut:
+     ```
+     VITE_CLOUDINARY_CLOUD_NAME=nama_cloud_anda
+     VITE_CLOUDINARY_API_KEY=api_key_anda
+     VITE_CLOUDINARY_API_SECRET=api_secret_anda
+     VITE_CLOUDINARY_UPLOAD_PRESET=ml_default
+     ```
+   - Ganti `nama_cloud_anda`, `api_key_anda`, dan `api_secret_anda` dengan nilai yang Anda dapatkan dari dashboard Cloudinary.
+   - Pastikan `VITE_CLOUDINARY_UPLOAD_PRESET` diisi dengan nama preset yang Anda buat (misalnya, `ml_default`).
 
 ## Admin Access Code
 
