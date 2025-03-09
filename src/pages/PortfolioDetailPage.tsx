@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { Container, Row, Col, Badge, Card, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Badge, Card, Spinner, Button } from 'react-bootstrap';
 import { ArrowLeft, Calendar, Tag, Info, Image as ImageIcon } from 'lucide-react';
 import SEO from '../components/SEO';
 import { db, collection, query, where, getDocs } from '../firebase';
@@ -39,6 +39,8 @@ const PortfolioDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentImageUrl, setCurrentImageUrl] = useState<string>('');
+  const [copySuccess, setCopySuccess] = useState(false);
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -58,8 +60,14 @@ const PortfolioDetailPage: React.FC = () => {
     fetchProject();
   }, [slug]);
 
-  const openModal = (index: number) => {
-    setCurrentImageIndex(index);
+  const openModal = (index: number | null, imageUrl?: string) => {
+    if (imageUrl) {
+      setCurrentImageUrl(imageUrl); // Set URL gambar utama
+      setCurrentImageIndex(-1); // Tidak ada indeks untuk gambar utama
+    } else if (project?.images && index !== null) {
+      setCurrentImageUrl(project.images[index]); // Set URL gambar dari galeri
+      setCurrentImageIndex(index); // Set indeks untuk navigasi galeri
+    }
     setModalIsOpen(true);
   };
   
@@ -69,15 +77,28 @@ const PortfolioDetailPage: React.FC = () => {
 
   const handleNext = () => {
     if (project?.images && currentImageIndex < project.images.length - 1) {
-      setCurrentImageIndex(currentImageIndex + 1);
+      const nextIndex = currentImageIndex + 1;
+      setCurrentImageIndex(nextIndex);
+      setCurrentImageUrl(project.images[nextIndex]);
+    }
+  };
+  
+  const handlePrevious = () => {
+    if (project?.images && currentImageIndex > 0) {
+      const prevIndex = currentImageIndex - 1;
+      setCurrentImageIndex(prevIndex);
+      setCurrentImageUrl(project.images[prevIndex]);
     }
   };
 
-  const handlePrevious = () => {
-    if (currentImageIndex > 0) {
-      setCurrentImageIndex(currentImageIndex - 1);
-    }
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopySuccess(true);
+    setTimeout(() => setCopySuccess(false), 2000);
   };
+
+  const shareUrl = window.location.href;
+  const shareTitle = project?.title || 'Check out this project!';
 
   if (loading) {
     return (
@@ -120,7 +141,7 @@ const PortfolioDetailPage: React.FC = () => {
                     backgroundPosition: 'center',
                     cursor: 'pointer'
                   }}
-                  onClick={() => openModal(0)}
+                  onClick={() => openModal(null, project.image)}
                 >
                   <div className="position-absolute bottom-0 start-0 w-100 bg-dark bg-opacity-50 p-3 text-white">
                     <h1 className="display-6 fw-bold mb-0">{project.title}</h1>
@@ -184,6 +205,43 @@ const PortfolioDetailPage: React.FC = () => {
               </h3>
 
               <div className="lead" dangerouslySetInnerHTML={{ __html: project.description }} />
+
+              <div className="mt-4 d-flex align-items-center gap-2">
+                Share : 
+                <Button 
+                  variant="success" 
+                  onClick={() => window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`${shareTitle} ${shareUrl}`)}`, '_blank')}
+                >
+                  <i className="fab fa-whatsapp"></i>
+                </Button>
+                <Button 
+                  variant="primary" 
+                  onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTitle)}`, '_blank')}
+                >
+                  <i className="fab fa-twitter"></i>
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&t=${encodeURIComponent(shareTitle)}`;
+                    window.open(
+                      facebookShareUrl,
+                      '',
+                      'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600'
+                    );
+                  }}
+                  title="Share on Facebook"
+                >
+                  <i className="fab fa-facebook"></i>
+                </Button>
+                <Button 
+                  variant={copySuccess ? "success" : "secondary"} 
+                  onClick={handleCopyLink}
+                >
+                  <i className={`fas ${copySuccess ? "fa-check" : "fa-link"} me-2`}></i>
+                  {copySuccess ? "Copied!" : "Copy"}
+                </Button>
+              </div>
             </Card>
             
             {project.video && (
@@ -269,13 +327,13 @@ const PortfolioDetailPage: React.FC = () => {
       <ImageModal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        imageUrl={project.images ? project.images[currentImageIndex] : ''}
+        imageUrl={currentImageUrl}
         altText={project.title}
         onNext={handleNext}
         onPrevious={handlePrevious}
         hasNext={project.images ? currentImageIndex < project.images.length - 1 : false}
         hasPrevious={currentImageIndex > 0}
-        showNavigation={true} // Menampilkan tombol navigasi
+        showNavigation={true}
       />
 
       <style>{`

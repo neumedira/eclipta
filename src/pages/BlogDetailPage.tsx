@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { Container, Row, Col, Badge, Card, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Badge, Card, Spinner, Button } from 'react-bootstrap';
 import { ArrowLeft, Calendar, Info } from 'lucide-react';
 import SEO from '../components/SEO';
 import { db, collection, query, where, getDocs } from '../firebase';
@@ -33,6 +33,7 @@ const BlogDetailPage: React.FC = () => {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -58,6 +59,15 @@ const BlogDetailPage: React.FC = () => {
   const closeModal = () => {
     setModalIsOpen(false);
   };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopySuccess(true);
+    setTimeout(() => setCopySuccess(false), 2000);
+  };
+
+  const shareUrl = window.location.href;
+  const shareTitle = post?.title || 'Check out this blog post!';
 
   if (loading) {
     return (
@@ -127,6 +137,43 @@ const BlogDetailPage: React.FC = () => {
               </div>
               
               <div className="blog-content" dangerouslySetInnerHTML={{ __html: post.content }} />
+              
+              <div className="mt-4 d-flex align-items-center gap-2">
+                Share : 
+                <Button 
+                  variant="success" 
+                  onClick={() => window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`${shareTitle} ${shareUrl}`)}`, '_blank')}
+                >
+                  <i className="fab fa-whatsapp"></i>
+                </Button>
+                <Button 
+                  variant="primary" 
+                  onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTitle)}`, '_blank')}
+                >
+                  <i className="fab fa-twitter"></i>
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&t=${encodeURIComponent(shareTitle)}`;
+                    window.open(
+                      facebookShareUrl,
+                      '',
+                      'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600'
+                    );
+                  }}
+                  title="Share on Facebook"
+                >
+                  <i className="fab fa-facebook"></i>
+                </Button>
+                <Button 
+                  variant={copySuccess ? "success" : "secondary"} 
+                  onClick={handleCopyLink}
+                >
+                  <i className={`fas ${copySuccess ? "fa-check" : "fa-link"} me-2`}></i>
+                  {copySuccess ? "Copied!" : "Copy"}
+                </Button>
+              </div>
             </Card>
           </Col>
           

@@ -3,11 +3,11 @@ import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom';
 import { Lock } from 'lucide-react';
 import { login, isAuthenticated, isLockedOut, getLockoutTimeRemaining } from '../utils/authService';
+import { showErrorAlert } from '../utils/sweetAlert';
 
 const LoginPage: React.FC = () => {
   const [accessCode, setAccessCode] = useState('');
   const [showAccessCode, setShowAccessCode] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [lockoutTime, setLockoutTime] = useState(0);
   const navigate = useNavigate();
   
@@ -31,11 +31,11 @@ const LoginPage: React.FC = () => {
     }
   }, [navigate]);
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (isLockedOut()) {
-      setError(`Too many failed attempts. Please try again in ${lockoutTime} minutes.`);
+      showErrorAlert(`Too many failed attempts. Please try again in ${lockoutTime} minutes.`);
       return;
     }
     
@@ -46,9 +46,9 @@ const LoginPage: React.FC = () => {
     } else {
       if (isLockedOut()) {
         setLockoutTime(getLockoutTimeRemaining());
-        setError(`Too many failed attempts. Please try again in ${lockoutTime} minutes.`);
+        showErrorAlert(`Too many failed attempts. Please try again in ${lockoutTime} minutes.`);
       } else {
-        setError('Invalid access code. Please try again.');
+        showErrorAlert('Invalid access code. Please try again.');
       }
     }
   };
@@ -69,8 +69,6 @@ const LoginPage: React.FC = () => {
                   </div>
                   <p className="text-muted">Enter your confidential access code</p>
                 </div>
-                
-                {error && <Alert variant="danger" className="mb-3">{error}</Alert>}
                 
                 {isLockedOut() ? (
                   <Alert variant="warning">

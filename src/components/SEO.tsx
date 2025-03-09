@@ -41,6 +41,10 @@ const SEO: React.FC<SEOProps> = ({
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={seoImage} />
+
+      <meta itemProp="name" content={fullTitle} />
+      <meta itemProp="description" content={description} />
+      <meta itemProp="image" content={seoImage} />
       
       <link rel="canonical" href={url} />
     </Helmet>
