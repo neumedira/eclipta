@@ -95,18 +95,13 @@ Berikut adalah beberapa gambar preview dari proyek ini:
      ```
    - Salin nilai-nilai tersebut ke file `.env`
 
-4. **Setup Firebase Storage**
-   - Di Firebase Console, buka **Storage** di menu sebelah kiri.
-   - Klik **Get Started** untuk mengaktifkan Firebase Storage.
-   - Ikuti langkah-langkah yang diberikan untuk menyelesaikan setup.
-
-5. **Setup Firestore Database**
+4. **Setup Firestore Database**
    - Di Firebase Console, buka **Firestore Database** di menu sebelah kiri.
    - Klik **Create database** untuk membuat database Firestore.
    - Pilih mode **Production** atau **Test** (pilih **Test** jika Anda ingin mengizinkan akses baca/tulis tanpa batasan untuk sementara).
    - Setelah database dibuat, Anda dapat mengatur Rules untuk Firestore.
 
-6. **Membuat Rules untuk Firestore**
+5. **Membuat Rules untuk Firestore**
    - Buka tab **Rules** di Firestore Database.
    - Ganti Rules default dengan Rules berikut untuk mengizinkan akses baca/tulis tanpa batasan:
      ```plaintext
