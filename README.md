@@ -132,7 +132,7 @@ Berikut adalah beberapa gambar preview dari proyek ini:
    - Di dashboard Cloudinary, buka **Settings** > **Upload**.
    - Scroll ke bagian **Upload presets** dan klik **Add upload preset**.
    - Beri nama preset Anda (misalnya, `ml_default`).
-   - Atur opsi upload sesuai kebutuhan Anda (misalnya, izinkan format file tertentu, atur ukuran maksimal file, dll.).
+   - Signing mode pilih yang Unsigned.
    - Klik **Save** untuk menyimpan preset.
    - Salin nama upload preset yang telah dibuat (misalnya, `ml_default`) untuk digunakan di file `.env`.
 
